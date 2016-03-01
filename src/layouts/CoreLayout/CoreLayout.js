@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react'
 import '../../styles/core.scss'
+import Navbar from 'components/navbar'
 
 // Note: Stateless/function components *will not* hot reload!
 // react-transform *only* works on component classes.
@@ -16,6 +17,7 @@ function CoreLayout ({ children }) {
       <div className='view-container'>
         {children}
       </div>
+      <Navbar />
     </div>
   )
 }

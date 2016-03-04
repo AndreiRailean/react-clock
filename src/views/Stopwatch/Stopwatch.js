@@ -2,13 +2,10 @@ import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
 import RaisedButton from 'material-ui/lib/raised-button'
 import colors from 'material-ui/lib/styles/colors'
-import moment from 'moment'
-
 import { start, stop, lap, reset, updateTime } from 'redux/modules/stopwatch'
 
+import { durationFormat } from 'modules/Stopwatch'
 import Laps from './Laps'
-
-const time_format = 'h:mm:ss.SS'
 
 export class Stopwatch extends React.Component {
   constructor (props) {
@@ -74,13 +71,12 @@ export class Stopwatch extends React.Component {
 
     return (
       <div className='stopwatch' style={stopwatchStyle}>
-        Lap: {moment(lap_time).format(time_format)}
-        <div style={{fontSize: '60px'}}>
-          {moment(time).format(time_format)}
+        Lap: {durationFormat(lap_time)}
+        <div style={{fontSize: '80px'}}>
+          {durationFormat(time)}
         </div>
         {left_button}
         {right_button}
-
         <Laps />
       </div>
     )

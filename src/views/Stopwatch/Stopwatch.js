@@ -45,24 +45,27 @@ export class Stopwatch extends React.Component {
   }
 
   render () {
+    const buttonStyle = {
+      margin: '5px 20px'
+    }
+
     const {
       onLapClick, onResetClick,
       isRunning, time, lap_time
     } = this.props
 
-    const left_button = isRunning ? (
-      <RaisedButton label='Lap' secondary onClick={onLapClick} />
-    ) : (
-      <RaisedButton label='Reset' onClick={onResetClick} />
-    )
+    let left_button = <RaisedButton label='Lap' disabled={!isRunning} style={buttonStyle} onClick={onLapClick} />
+    if (time && !isRunning) {
+      left_button = <RaisedButton label='Reset' style={buttonStyle} onClick={onResetClick} />
+    }
 
     const right_button = isRunning ? (
-      <RaisedButton label='Stop' onClick={this.stopTimer} style={{color: colors.cyan700}} />
+      <RaisedButton label='Stop' style={buttonStyle} onClick={this.stopTimer} labelColor={colors.redA700} />
     ) : (
-      <RaisedButton label='Start' primary onClick={this.startTimer} />
+      <RaisedButton label='Start' style={buttonStyle} labelColor={colors.green700} onClick={this.startTimer} />
     )
 
-    var stopwatchStyle = {
+    const controlsStyle = {
       padding: '24px',
       WebkitTransition: 'all', // note the capital 'W' here
       msTransition: 'all', // 'ms' is the only lowercase vendor prefix
@@ -70,13 +73,17 @@ export class Stopwatch extends React.Component {
     }
 
     return (
-      <div className='stopwatch' style={stopwatchStyle}>
-        Lap: {durationFormat(lap_time)}
-        <div style={{fontSize: '80px'}}>
-          {durationFormat(time)}
+      <div className='stopwatch'>
+        <div style={controlsStyle}>
+          <div style={{color: colors.grey600}}>
+            {durationFormat(lap_time)}
+          </div>
+          <div style={{fontSize: '80px'}}>
+            {durationFormat(time)}
+          </div>
+          {left_button}
+          {right_button}
         </div>
-        {left_button}
-        {right_button}
         <Laps />
       </div>
     )

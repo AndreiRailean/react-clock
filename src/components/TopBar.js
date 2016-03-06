@@ -8,9 +8,9 @@ import NavigationMoreVertIcon from 'material-ui/lib/svg-icons/navigation/more-ve
 import MenuItem from 'material-ui/lib/menus/menu-item'
 import Divider from 'material-ui/lib/divider'
 
-const TopBar = () => (
+const TopBar = ({title='Stopwatch'}) => (
   <AppBar
-    title='Stopwatch'
+    title={title}
     showMenuIconButton={null}
     iconElementRight={
       <IconMenu
@@ -35,5 +35,9 @@ const TopBar = () => (
     }
   />
 )
+
+TopBar.propTypes = {
+  title: React.PropTypes.string.isRequired
+}
 
 export default TopBar

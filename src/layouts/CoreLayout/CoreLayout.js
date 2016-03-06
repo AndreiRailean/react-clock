@@ -1,6 +1,5 @@
 import React, { PropTypes } from 'react'
 import '../../styles/core.scss'
-import TopBar from 'components/topbar'
 
 // Note: Stateless/function components *will not* hot reload!
 // react-transform *only* works on component classes.
@@ -14,7 +13,6 @@ import TopBar from 'components/topbar'
 function CoreLayout ({ children }) {
   return (
     <div className='page-container'>
-      <TopBar />
       <div className='view-container'>
         {children}
       </div>

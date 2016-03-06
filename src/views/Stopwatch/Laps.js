@@ -7,7 +7,7 @@ import TableRowColumn from 'material-ui/lib/table/table-row-column'
 import TableBody from 'material-ui/lib/table/table-body'
 import Colors from 'material-ui/lib/styles/colors'
 
-import {durationFormat} from 'modules/Stopwatch'
+import { stopwatchFormat as time_format } from 'utils/timeFormatter'
 
 const font_style = {
   fontSize: '20dp'
@@ -28,7 +28,7 @@ let Laps = ({ laps }) => {
         <TableRow key={index} style={{backgroundColor: row_highlight}}>
           <TableRowColumn style={font_style}>Lap {index+1}</TableRowColumn>
           <TableRowColumn style={Object.assign({}, font_style, {textAlign: 'right'})} >
-            <span>{durationFormat(time)}</span>
+            <span>{time_format(time)}</span>
           </TableRowColumn>
         </TableRow>
       )

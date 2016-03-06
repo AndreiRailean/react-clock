@@ -4,8 +4,9 @@ import RaisedButton from 'material-ui/lib/raised-button'
 import colors from 'material-ui/lib/styles/colors'
 import { start, stop, lap, reset, updateTime } from 'redux/modules/stopwatch'
 
-import { durationFormat } from 'modules/Stopwatch'
+import { stopwatchFormat as time_format } from 'utils/timeFormatter'
 import Laps from './Laps'
+import TopBar from 'components/topbar'
 
 export class Stopwatch extends React.Component {
   constructor (props) {
@@ -74,12 +75,14 @@ export class Stopwatch extends React.Component {
 
     return (
       <div className='stopwatch'>
+        <TopBar title='Stopwatch' />
+
         <div style={controlsStyle}>
           <div style={{color: colors.grey600}}>
-            {durationFormat(lap_time)}
+            {time_format(lap_time)}
           </div>
           <div style={{fontSize: '80px'}}>
-            {durationFormat(time)}
+            {time_format(time)}
           </div>
           {left_button}
           {right_button}

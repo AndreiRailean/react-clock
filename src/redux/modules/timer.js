@@ -7,6 +7,7 @@ export const TIMER_START = 'TIMER_START'
 export const TIMER_CANCEL = 'TIMER_CANCEL'
 export const TIMER_PAUSE = 'TIMER_PAUSE'
 export const TIMER_UPDATE_TIME = 'TIMER_UPDATE_TIME'
+export const TIMER_SET = 'TIMER_SET'
 
 // ------------------------------------
 // Actions
@@ -27,11 +28,17 @@ export const updateTime = () => ({
   type: TIMER_UPDATE_TIME
 })
 
+export const set = (time_ms) => ({
+  type: TIMER_SET,
+  setting: time_ms
+})
+
 export const actions = {
   start,
   cancel,
   pause,
-  update
+  update,
+  set
 }
 
 // ------------------------------------
@@ -64,6 +71,12 @@ const ACTION_HANDLERS = {
       last_update: {$set: null},
       running: {$set: false},
       done: {$set: false}
+    })
+  },
+
+  [TIMER_SET]: (state, action) => {
+    return update(state, {
+      setting: {$set: action.setting}
     })
   },
 

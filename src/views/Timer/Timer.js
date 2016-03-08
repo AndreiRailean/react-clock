@@ -6,13 +6,15 @@ import colors from 'material-ui/lib/styles/colors'
 import Dialog from 'material-ui/lib/dialog'
 import CircularProgress from 'material-ui/lib/circular-progress'
 import LinearProgress from 'material-ui/lib/linear-progress'
-import SelectField from 'material-ui/lib/SelectField'
-import MenuItem from 'material-ui/lib/menus/menu-item'
 
 import TopBar from 'components/topbar'
-import { timerFormat as time_format, durationToTimeHash } from 'utils/timeFormatter'
+import TimeSelector from './TimeSelector'
+
+import { timerFormat as time_format } from 'utils/timeFormatter'
 
 import { start, pause, cancel, updateTime } from 'redux/modules/timer'
+
+// TODO: Add sound
 
 export class Timer extends React.Component {
   constructor (props) {
@@ -116,50 +118,51 @@ export class Timer extends React.Component {
       )
     }
 
-    const hours = Array(24).fill(0).map((el, i) => (
-      <MenuItem
-        value={i}
-        key={i}
-        primaryText={`${i}`}
-        floatingLabelText='Hours'
-      />
-    ))
+    const time_countdown = (
+      <div className='timerDisplay'>
+        <CircularProgress
+          mode='determinate'
+          value={elapsed}
+          size={3}
+          max={setting}
+        />
 
-    const timePicker = (
-      <SelectField
-        value={durationToTimeHash(setting).hours}
-      >
-        {hours}
-      </SelectField>
+        <div style={{fontSize: '48px'}}>
+          {time_format(countdown)}
+        </div>
+
+        <LinearProgress mode='determinate'
+          value={elapsed}
+          max={setting}
+          style={{height: '10px', width: '50%', margin: 'auto'}}
+        />
+      </div>
     )
 
+    const time_picker = (
+      <div className='timePicker'>
+        <TimeSelector />
+      </div>
+    )
+
+    const time_display = (!elapsed && !isRunning)
+      ? time_picker
+      : time_countdown
+
     return (
-      <div style={{textAlign: 'center'}}>
+      <div>
         <TopBar title='Timer' />
-        <div className='timerDisplay'>
-          <CircularProgress
-            mode='determinate'
-            value={elapsed}
-            size={3}
-            max={setting}
-          />
-          <div style={{fontSize: '48px'}}>
-            {time_format(countdown)}
+
+        <div style={{textAlign: 'center'}}>
+          <div style={{height: '300px'}}>
+            {time_display}
           </div>
-          <LinearProgress mode='determinate'
-            value={elapsed}
-            max={setting}
-            style={{height: '10px', width: '50%', margin: 'auto'}}
-          />
-        </div>
-        <div className='timePicker'>
-          {timePicker}
+          <div style={{marginTop: '20px'}}>
+            {left_button}
+            {this.rightButton()}
+          </div>
         </div>
 
-        <div className='timeControls'>
-          {left_button}
-          {this.rightButton()}
-        </div>
         <Dialog
           title='Timer Done'
           actions={
@@ -174,7 +177,6 @@ export class Timer extends React.Component {
           open={isDone}
           onRequestClose={this.onCancelClick}
         />
-
       </div>
     )
   }
@@ -206,4 +208,7 @@ const mapDispatchToProps = (dispatch) => ({
   updateTime: () => dispatch(updateTime())
 })
 
-export default connect((mapStateToProps), mapDispatchToProps)(Timer)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Timer)

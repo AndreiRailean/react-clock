@@ -106,7 +106,7 @@ const ACTION_HANDLERS = {
 // Reducer
 // ------------------------------------
 const initialState = {
-  setting: 6000000, // one minute
+  setting: 300000, // five minutes
   elapsed: 0,
   last_update: null,
   running: false,

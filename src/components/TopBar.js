@@ -21,6 +21,15 @@ const TopBar = ({title='Stopwatch'}) => (
         }
       >
         <MenuItem
+          primaryText='Home'
+          containerElement={<Link to='/' />}
+        />
+        <Divider />
+        <MenuItem
+          primaryText='World Clock'
+          containerElement={<Link to='/worldclock' />}
+        />
+        <MenuItem
           primaryText='Stopwatch'
           containerElement={<Link to='/stopwatch' />}
         />
@@ -29,7 +38,10 @@ const TopBar = ({title='Stopwatch'}) => (
           containerElement={<Link to='/timer' />}
         />
         <Divider />
-        <MenuItem primaryText='Info' />
+        <MenuItem
+          primaryText='Info'
+          containerElement={<Link to='/info' />}
+        />
 
       </IconMenu>
     }

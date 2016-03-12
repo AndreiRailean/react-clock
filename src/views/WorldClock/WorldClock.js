@@ -8,31 +8,50 @@ import CardText from 'material-ui/lib/card/card-text'
 import moment from 'moment-timezone'
 
 class WorldClock extends React.Component {
+  constructor (props) {
+    super(props)
+    this.state = {
+      time: moment()
+    }
+  }
+
+  componentDidMount () {
+    this.interval = setInterval(() => {
+      this.setState({time: moment()})
+    }, 100)
+  }
+
+  componentWillUnmount () {
+    clearInterval(this.interval)
+  }
+
   render () {
-    const my_moment = moment()
-    const my_offset = my_moment.utcOffset()
+    const my_moment = this.state.time
+    const offset = my_moment.utcOffset()
 
     const cities = this.props.cities.map((city, i) => {
-      let city_moment = my_moment.clone().tz(city)
-      let city_offset = city_moment.utcOffset()
-      let offset_diff = my_offset - city_offset
+      let m = my_moment.clone().tz(city)
+      let offset_diff = offset - m.utcOffset()
       let offset_diff_h = offset_diff / 60
 
-      let city_time = city_moment.format('h:mm A')
-      let city_name = city.split('/').pop().replace('_', ' ')
+      let time = m.format('h:mm')
+      let am_pm = m.format('A')
+      let name = city.split('/').pop().replace('_', ' ')
 
       let time_info = (!offset_diff)
         ? ''
         : `${Math.abs(offset_diff_h)} hours ${(offset_diff_h < 0)?'ahead':'behind'}`
 
-      let day_info = moment().calendar(city_moment).split(' ').shift()
+      let day_info = moment().calendar(m).split(' ').shift()
 
       return (
         <Card key={i}>
-          <CardText>
-            <h2 style={{margin: '0 0 5px'}}>{city_name}</h2>
+          <CardText style={{position: 'relative'}}>
+            <h2 style={{margin: '0 0 5px'}}>{name}</h2>
             <b>{day_info}{(time_info?',':'')}</b> {time_info}
-            <div style={{fontSize: '30px'}}>{city_time}</div>
+            <div style={{position: 'absolute', top: '0', right: '0', padding: '5px'}}>
+              <span style={{fontSize: '30px'}}>{time}</span> <span>{am_pm}</span>
+            </div>
           </CardText>
         </Card>
       )

@@ -1,28 +1,53 @@
-// import update from 'react-addons-update'
+import update from 'react-addons-update'
 
 // ------------------------------------
 // Constants
 // ------------------------------------
-export const WORLDCLOCK_SET_CITY = 'WORLDCLOCK_SET_CITY'
+export const WORLDCLOCK_ADD_CITY = 'WORLDCLOCK_ADD_CITY'
+export const WORLDCLOCK_DELETE_CITY = 'WORLDCLOCK_DELETE_CITY'
 
 // ------------------------------------
 // Actions
 // ------------------------------------
-export const set_city = () => ({
-  type: WORLDCLOCK_SET_CITY
+export const add_city = (city) => ({
+  type: WORLDCLOCK_ADD_CITY,
+  city: city
+})
+
+export const delete_city = (city) => ({
+  type: WORLDCLOCK_DELETE_CITY,
+  city: city
 })
 
 export const actions = {
-  set_city
+  add_city,
+  delete_city
 }
 
 // ------------------------------------
 // Action Handlers
 // ------------------------------------
 const ACTION_HANDLERS = {
-  [WORLDCLOCK_SET_CITY]: (state, action) => {
-    return state
+  [WORLDCLOCK_ADD_CITY]: (state, action) => {
+    const city = action.city
+
+    if (state.cities.includes(city)) return state
+
+    return update(state, {
+      cities: {$push: [city]}
+    })
+  },
+
+  [WORLDCLOCK_DELETE_CITY]: (state, action) => {
+    const city = action.city
+    let index = state.cities.indexOf(city)
+    if (index === -1) return state
+
+    return update(state, {
+      cities: {$splice: [[index, 1]]}
+    })
   }
+
 }
 
 // ------------------------------------
@@ -31,9 +56,7 @@ const ACTION_HANDLERS = {
 const initialState = {
   cities: [
     'Australia/Sydney',
-    'Europe/Chisinau',
-    'Asia/Hong_Kong',
-    'Pacific/Auckland'
+    'Europe/Chisinau'
   ]
 }
 

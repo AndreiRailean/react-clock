@@ -5,8 +5,14 @@ import TopBar from 'components/topbar'
 import Card from 'material-ui/lib/card/card'
 import CardText from 'material-ui/lib/card/card-text'
 import FlatButton from 'material-ui/lib/flat-button'
+import IconButton from 'material-ui/lib/icon-button'
+import RemoveIcon from 'material-ui/lib/svg-icons/content/remove-circle'
+import Colors from 'material-ui/lib/styles/colors'
 
-import WorldClockToolbar from './Toolbar'
+import Toolbar from 'material-ui/lib/toolbar/toolbar'
+import ToolbarGroup from 'material-ui/lib/toolbar/toolbar-group'
+
+// import WorldClockToolbar from './Toolbar'
 import AddCityList from './AddCityList'
 
 import moment from 'moment-timezone'
@@ -18,7 +24,8 @@ class WorldClock extends React.Component {
     super(props)
     this.state = {
       time: moment(),
-      editing: false
+      editing: false,
+      adding: false
     }
   }
 
@@ -32,11 +39,48 @@ class WorldClock extends React.Component {
     clearInterval(this.interval)
   }
 
-  render () {
+  WorldClockToolbar () {
+    const left_button_label = this.state.editing
+      ? 'Done'
+      : 'Edit'
+
+    const onEditToggle = () => {
+      this.setState({editing: !this.state.editing})
+    }
+
+    const right_button_label = this.state.adding
+      ? 'Done'
+      : '+'
+
+    const onAddToggle = () => {
+      this.setState({adding: !this.state.adding})
+    }
+
+    const right_button = this.state.adding
+      ? ''
+      : <FlatButton label={left_button_label} primary onTouchTap={onEditToggle} />
+
+    const left_button = this.state.editing
+      ? ''
+      : <FlatButton label={right_button_label} primary onTouchTap={onAddToggle} />
+
+    return (
+      <Toolbar>
+        <ToolbarGroup firstChild float='left'>
+          {right_button}
+        </ToolbarGroup>
+        <ToolbarGroup lastChild float='right'>
+          {left_button}
+        </ToolbarGroup>
+      </Toolbar>
+    )
+  }
+
+  CityList () {
     const now = this.state.time
     const offset = now.utcOffset()
 
-    const cities = this.props.cities.map((city, i) => {
+    return this.props.cities.map((city, i) => {
       let m = now.clone().tz(city)
 
       let time = m.format('h:mm')
@@ -67,31 +111,50 @@ class WorldClock extends React.Component {
 
       let day_relative = moment().calendar(m).split(' ').shift()
 
+      let right_display = (
+        <div>
+          <span style={{fontSize: '30px'}}>{time}</span> <span>{am_pm}</span>
+        </div>
+      )
+
+      if (this.state.editing) {
+        right_display = (
+          <IconButton
+            touch
+            onTouchTap={this.props.onDelete(city)}
+          >
+            <RemoveIcon color={Colors.red400} />
+          </IconButton>
+        )
+      }
+
       return (
         <Card key={i}>
           <CardText style={{position: 'relative'}}>
             <h2 style={{margin: '0 0 5px'}}>{name}</h2>
             <b>{day_relative}{(delta_str?',':'')}</b> {delta_str}
             <div style={{position: 'absolute', top: '0', right: '0', padding: '5px'}}>
-              <span style={{fontSize: '30px'}}>{time}</span> <span>{am_pm}</span>
+              {right_display}
             </div>
-            <FlatButton
-              label='DELETE'
-              onTouchTap={this.props.onDelete(city)}
-            />
           </CardText>
         </Card>
       )
     })
+  }
+
+  render () {
+    let main_pane = this.CityList()
+
+    if (this.state.adding) {
+      main_pane = <AddCityList />
+    }
 
     return (
       <div>
         <TopBar title='World Clock' />
-        <WorldClockToolbar />
+        {this.WorldClockToolbar()}
 
-        {cities}
-
-        <AddCityList />
+        {main_pane}
 
       </div>
     )

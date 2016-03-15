@@ -8,7 +8,7 @@ import NavigationMoreVertIcon from 'material-ui/lib/svg-icons/navigation/more-ve
 import MenuItem from 'material-ui/lib/menus/menu-item'
 import Divider from 'material-ui/lib/divider'
 
-const TopBar = ({title='Stopwatch'}) => (
+const TopBar = ({title='Clock App'}) => (
   <AppBar
     title={title}
     showMenuIconButton={null}
@@ -28,6 +28,10 @@ const TopBar = ({title='Stopwatch'}) => (
         <MenuItem
           primaryText='World Clock'
           containerElement={<Link to='/worldclock' />}
+        />
+        <MenuItem
+          primaryText='Alarm'
+          containerElement={<Link to='/alarm' />}
         />
         <MenuItem
           primaryText='Stopwatch'

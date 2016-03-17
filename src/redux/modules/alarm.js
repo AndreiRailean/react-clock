@@ -15,8 +15,9 @@ export const add_alarm = () => ({
   type: ALARM_ADD
 })
 
-export const delete_alarm = () => ({
-  type: ALARM_DELETE
+export const delete_alarm = (index) => ({
+  type: ALARM_DELETE,
+  index
 })
 
 export const edit_alarm = (index, data) => ({
@@ -46,7 +47,9 @@ const ACTION_HANDLERS = {
   },
 
   [ALARM_DELETE]: (state, action) => {
-    return state
+    return update(state, {
+      list: {$splice: [[action.index, 1]]}
+    })
   },
 
   [ALARM_EDIT]: (state, action) => {

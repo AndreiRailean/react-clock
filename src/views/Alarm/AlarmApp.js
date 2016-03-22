@@ -1,17 +1,13 @@
 import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
-import TopBar from 'components/topbar'
+import { push } from 'react-router-redux'
 
-import Card from 'material-ui/lib/card/card'
-import CardText from 'material-ui/lib/card/card-text'
-import Colors from 'material-ui/lib/styles/colors'
-import Toggle from 'material-ui/lib/toggle'
-import IconButton from 'material-ui/lib/icon-button'
 import FlatButton from 'material-ui/lib/flat-button'
 import Toolbar from 'material-ui/lib/toolbar/toolbar'
 import ToolbarGroup from 'material-ui/lib/toolbar/toolbar-group'
-import RemoveIcon from 'material-ui/lib/svg-icons/content/remove-circle'
-import ChevronRight from 'material-ui/lib/svg-icons/navigation/chevron-right'
+
+import TopBar from 'components/topbar'
+import ListItem from './ListItem'
 
 import { toggle_alarm, delete_alarm } from 'redux/modules/alarm.js'
 import { app_background as default_background, toolbar_background } from 'config'
@@ -26,84 +22,16 @@ class AlarmApp extends React.Component {
   }
 
   alarmList () {
-    return this.props.alarms.map((alarm, i) => {
-      let toggleControl = ''
-      if (!this.state.editing) {
-        toggleControl = (
-          <div style={{position: 'absolute', top: '30px', right: '15px'}}>
-            <Toggle toggled={alarm.enabled} onToggle={this.props.onToggleAlarm(i)} />
-          </div>
-        )
-      }
-
-      let deleteControl = ''
-      if (this.state.editing) {
-        deleteControl = (
-          <IconButton
-            touch
-            onTouchTap={this.props.onDeleteAlarm(i)}
-            style={{position: 'absolute', top: '20px', left: '15px'}}
-          >
-            <RemoveIcon color={Colors.red400} />
-          </IconButton>
-        )
-      }
-
-      let timeStyle = {
-        margin: '0 0 5px',
-        fontWeight: 'normal',
-        fontSize: '30px'
-      }
-
-      let timeContainerStyle = {
-        color: Colors.black
-      }
-      if (this.state.editing) {
-        timeContainerStyle = {
-          marginLeft: '60px'
-        }
-      }
-
-      let style = {
-        backgroundColor: Colors.white
-      }
-
-      if (!alarm.enabled) {
-        style.backgroundColor = default_background
-        timeContainerStyle.color = Colors.grey500
-      }
-
-      let editControl = null
-      if (this.state.editing) {
-        editControl = (
-          <IconButton
-            touch
-            onTouchTap={this.props.onDeleteAlarm(i)}
-            style={{position: 'absolute', top: '20px', right: '15px'}}
-          >
-            <ChevronRight color={Colors.grey500} />
-          </IconButton>
-        )
-      }
-
-      let right_control = toggleControl
-      if (this.state.editing) {
-        right_control = editControl
-      }
-
-      return (
-        <Card key={i} style={style}>
-          <CardText style={{position: 'relative'}}>
-            {deleteControl}
-            <div style={timeContainerStyle}>
-              <h2 style={timeStyle}>{alarm.time}</h2>
-              {alarm.label}
-            </div>
-            {right_control}
-          </CardText>
-        </Card>
-      )
-    })
+    return this.props.alarms.map((alarm, i) => (
+      <ListItem
+        key={i}
+        editing={this.state.editing}
+        onToggle={this.props.onToggleAlarm(i)}
+        onDelete={this.props.onDeleteAlarm(i)}
+        onEdit={this.props.onEditAlarm(i)}
+        {...alarm}
+      />
+    ))
   }
 
   toolbar () {
@@ -125,11 +53,11 @@ class AlarmApp extends React.Component {
     }
 
     let right_button = ''
-    if (this.state.editing) {
+    if (this.state.editing && this.props.alarms.length) {
       right_button = <FlatButton label='Done' primary onTouchTap={onCancel} />
-    } else if (this.state.adding) {
+    } else if (this.state.adding && this.props.alarms.length) {
       right_button = <FlatButton label='Cancel' primary onTouchTap={onCancel} />
-    } else {
+    } else if (this.props.alarms && this.props.alarms.length) {
       right_button = <FlatButton label='Edit' primary onTouchTap={onEditToggle} />
     }
 
@@ -154,6 +82,16 @@ class AlarmApp extends React.Component {
     )
   }
 
+  body () {
+    if (this.props.alarms.length) {
+      return this.alarmList()
+    } else {
+      return (
+        <div style={{textAlign: 'center'}}>No Alarms</div>
+      )
+    }
+  }
+
   render () {
     let style = {
       height: '100%',
@@ -164,7 +102,7 @@ class AlarmApp extends React.Component {
       <div style={style}>
         <TopBar title='Alarm' />
         {this.toolbar()}
-        {this.alarmList()}
+        {this.body()}
       </div>
     )
   }
@@ -173,7 +111,8 @@ class AlarmApp extends React.Component {
 AlarmApp.propTypes = {
   alarms: PropTypes.array.isRequired,
   onToggleAlarm: PropTypes.func.isRequired,
-  onDeleteAlarm: PropTypes.func.isRequired
+  onDeleteAlarm: PropTypes.func.isRequired,
+  onEditAlarm: PropTypes.func.isRequired
 }
 
 const mapStateToProps = (state) => ({
@@ -182,7 +121,8 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   onToggleAlarm: (index) => () => dispatch(toggle_alarm(index)),
-  onDeleteAlarm: (index) => () => dispatch(delete_alarm(index))
+  onDeleteAlarm: (index) => () => dispatch(delete_alarm(index)),
+  onEditAlarm: (index) => () => dispatch(push(`/alarms/${index}/edit`))
 })
 
 export default connect(

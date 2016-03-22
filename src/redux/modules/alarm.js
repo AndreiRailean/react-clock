@@ -73,7 +73,7 @@ const ACTION_HANDLERS = {
 // ------------------------------------
 const initialState = {
   list: [{
-    time: '8:07 AM',
+    time: '7:42 AM',
     label: 'Alarm',
     repeat: null,
     snooze: true,
@@ -82,8 +82,15 @@ const initialState = {
   }, {
     time: '10:20 AM',
     label: 'Waky-Waky',
-    repeat: null,
+    repeat: [1, 2, 7],
     snooze: false,
+    sound: null,
+    enabled: false
+  }, {
+    time: '1:37 PM',
+    label: 'Vacuum Now',
+    repeat: null,
+    snooze: true,
     sound: null,
     enabled: true
   }]

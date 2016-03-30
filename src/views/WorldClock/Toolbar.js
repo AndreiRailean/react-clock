@@ -21,4 +21,10 @@ const WorldClockToolbar = ({onEditToggle, editing}) => {
   )
 }
 
+WorldClockToolbar.propTypes = {
+  editing: React.PropTypes.bool.isRequired,
+
+  onEditToggle: React.PropTypes.func
+}
+
 export default WorldClockToolbar

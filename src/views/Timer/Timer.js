@@ -41,7 +41,7 @@ export class Timer extends React.Component {
   startTimeUpdate () {
     let interval = setInterval(() => {
       this.props.updateTime()
-    }, 100)
+    }, 200)
     this.state.interval = interval
   }
 

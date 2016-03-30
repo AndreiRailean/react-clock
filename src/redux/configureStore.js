@@ -6,7 +6,7 @@ import createLogger from 'redux-logger'
 
 export default function configureStore (initialState = {}, history) {
   // Compose final middleware and use devtools in debug environment
-  // const logger = createLogger()
+
   let middleware = applyMiddleware(
     thunk,
     routerMiddleware(history),

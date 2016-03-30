@@ -5,7 +5,7 @@ import update from 'react-addons-update'
 // ------------------------------------
 export const ALARM_ADD = 'ALARM_ADD'
 export const ALARM_DELETE = 'ALARM_DELETE'
-export const ALARM_EDIT = 'ALARM_EDIT'
+export const ALARM_SAVE = 'ALARM_EDIT'
 export const ALARM_TOGGLE = 'ALARM_TOGGLE'
 
 // ------------------------------------
@@ -20,8 +20,8 @@ export const delete_alarm = (index) => ({
   index
 })
 
-export const edit_alarm = (index, data) => ({
-  type: ALARM_EDIT,
+export const save_alarm = (data, index) => ({
+  type: ALARM_SAVE,
   index,
   data
 })
@@ -34,7 +34,7 @@ export const toggle_alarm = (index) => ({
 export const actions = {
   add_alarm,
   delete_alarm,
-  edit_alarm,
+  save_alarm,
   toggle_alarm
 }
 
@@ -52,10 +52,18 @@ const ACTION_HANDLERS = {
     })
   },
 
-  [ALARM_EDIT]: (state, action) => {
-    return update(state, {
-      list: {$splice: [[action.index, 1, action.data]]}
-    })
+  [ALARM_SAVE]: (state, action) => {
+    const { index, data } = action
+
+    let $update = {}
+
+    if (index !== null) {
+      $update = {$splice: [[index, 1, data]]}
+    } else {
+      $update = {$push: [data]}
+    }
+
+    return update(state, { list: $update })
   },
 
   [ALARM_TOGGLE]: (state, action) => {
@@ -75,21 +83,21 @@ const initialState = {
   list: [{
     time: '7:42 AM',
     label: 'Alarm',
-    repeat: null,
+    repeat: [],
     snooze: true,
     sound: null,
     enabled: true
   }, {
     time: '10:20 AM',
     label: 'Waky-Waky',
-    repeat: [1, 2, 7],
+    repeat: [0, 2, 6],
     snooze: false,
     sound: null,
     enabled: false
   }, {
     time: '1:37 PM',
     label: 'Vacuum Now',
-    repeat: null,
+    repeat: [],
     snooze: true,
     sound: null,
     enabled: true

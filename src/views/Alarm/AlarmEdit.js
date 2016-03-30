@@ -1,26 +1,66 @@
 import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
+import update from 'react-addons-update'
 
 import AppBar from 'material-ui/lib/app-bar'
 import IconButton from 'material-ui/lib/icon-button'
 import NavigationClose from 'material-ui/lib/svg-icons/navigation/close'
 import FlatButton from 'material-ui/lib/flat-button'
 import Divider from 'material-ui/lib/divider'
-
+import Card from 'material-ui/lib/card/card'
+import List from 'material-ui/lib/lists/list'
+import ListItem from 'material-ui/lib/lists/list-item'
 import Toggle from 'material-ui/lib/toggle'
+import Checkbox from 'material-ui/lib/checkbox'
+import TextField from 'material-ui/lib/text-field'
+
+import ChevronRight from 'material-ui/lib/svg-icons/navigation/chevron-right'
+import ArrowRight from 'material-ui/lib/svg-icons/hardware/keyboard-arrow-right'
+import ArrowDown from 'material-ui/lib/svg-icons/hardware/keyboard-arrow-down'
+
+import TimeSelector from './TimeSelector'
 
 import { app_background as default_background } from 'config'
-import { delete_alarm } from 'redux/modules/alarm.js'
+import { delete_alarm, save_alarm } from 'redux/modules/alarm.js'
+
+const allWeekDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
 
 class AlarmEdit extends React.Component {
+
+  constructor (props) {
+    super(props)
+    this.save = this.save.bind(this)
+    this.repeatEditToggle = this.repeatEditToggle.bind(this)
+    this.labelEditToggle = this.labelEditToggle.bind(this)
+
+    this.state = {
+      alarm: props.alarm,
+      id: props.id,
+      repeatEditOpen: false,
+      labelEditOpen: false
+    }
+  }
+
+  repeatEditToggle () {
+    this.setState({repeatEditOpen: !this.state.repeatEditOpen})
+  }
+
+  labelEditToggle () {
+    this.setState({labelEditOpen: !this.state.labelEditOpen})
+  }
+
+  save () {
+    this.props.save(this.state.id, this.state.alarm)
+    // console.log(`... ${this.state.id} save ...`)
+  }
 
   toolbar () {
     return (
       <AppBar
         title='Edit Alarm'
         iconElementLeft={<IconButton onTouchTap={this.props.cancel} ><NavigationClose /></IconButton>}
-        iconElementRight={<FlatButton label='Save' onTouchTap={this.props.save} />}
+        iconElementRight={<FlatButton label='Save' onTouchTap={this.save} />}
       />
     )
   }
@@ -31,51 +71,168 @@ class AlarmEdit extends React.Component {
       backgroundColor: default_background
     }
 
-    const { alarm, id } = this.props
+    const { alarm } = this.state
 
     const onSnooze = () => {
-      console.log('... snooze toggle ...')
+      this.setState(update(this.state, {
+        alarm: {snooze: { $apply: (x) => !x }}
+      }))
+    }
+
+    const onRepeatDayToggle = (day_id) => {
+      let repeat_state = this.state.alarm.repeat
+      let idx = repeat_state.indexOf(day_id)
+      if (idx === -1) {
+        repeat_state.push(day_id)
+      } else {
+        repeat_state.splice(idx, 1)
+      }
+      this.setState(update(this.state, {
+        alarm: {repeat: {$set: repeat_state}}
+      }))
     }
 
     const repeatString = () => {
-      if (alarm.repeat) {
-        return 'Repeating...'
+      const { repeat } = alarm
+      if (repeat.length === 5 && repeat.every((day_id) => day_id < 5)) {
+        return 'Week Days'
+      } else if (repeat.length === 7) {
+        return 'Every Day'
+      } else if (repeat.length > 0) {
+        return allWeekDays
+                .filter((day, id) => repeat.includes(id))
+                .map((day) => day.substring(0, 3))
+                .join(', ')
+      } else {
+        return 'Never'
       }
+    }
+
+    let time = alarm.time.replace(':', ' ')
+    let [hours, minutes, ampm] = time.split(' ')
+    hours = parseInt(hours)
+    minutes = parseInt(minutes)
+
+    const onTimeUpdate = (hours, minutes, ampm) => {
+      let minute_str = minutes<10 ? `0${minutes}` : minutes
+      this.setState(update(this.state, {
+        alarm: {time: {$set: `${hours}:${minute_str} ${ampm}`}}
+      }))
+    }
+
+    let repeatSection = []
+    if (!this.state.repeatEditOpen) {
+      repeatSection.push(
+        <ListItem
+          primaryText='Repeat'
+          secondaryText={repeatString()}
+          rightIcon={<ArrowRight />}
+          onTouchTap={this.repeatEditToggle}
+          key='repeat-1'
+        />
+      )
+    } else {
+      repeatSection.push(
+        <ListItem
+          primaryText='Repeat'
+          secondaryText={repeatString()}
+          rightIcon={<ArrowDown />}
+          onTouchTap={this.repeatEditToggle}
+          key='repeat-1'
+        />
+      )
+
+      allWeekDays.forEach((day, id) => {
+        let toggleCB = () => onRepeatDayToggle(id)
+        let checked = alarm.repeat.includes(id)
+        repeatSection.push(
+          <ListItem
+            primaryText={`Every ${day}`}
+            key={id}
+            leftCheckbox={
+              <Checkbox
+                defaultChecked={checked}
+                onCheck={toggleCB}
+              />
+            }
+          />
+        )
+      })
+    }
+
+    const onLabelUpdate = (e) => {
+      this.setState(update(this.state, {
+        alarm: {label: {$set: e.target.value}}
+      }))
+    }
+
+    let labelSection = []
+    if (!this.state.labelEditOpen) {
+      labelSection.push(
+        <ListItem
+          primaryText='Label'
+          secondaryText={alarm.label}
+          rightIcon={<ArrowRight />}
+          onTouchTap={this.labelEditToggle}
+          key='label-1'
+        />
+      )
+    } else {
+      labelSection.push(
+        <ListItem
+          primaryText='Label'
+          secondaryText={alarm.label}
+          rightIcon={<ArrowDown />}
+          onTouchTap={this.labelEditToggle}
+          key='label-1'
+        />
+      )
+
+      labelSection.push(
+        <TextField
+          defaultValue={alarm.label}
+          hintText='Alarm Label'
+          onChange={onLabelUpdate}
+          key='label-2'
+        />
+      )
     }
 
     return (
       <div style={style}>
         {this.toolbar()}
 
-        <div>
-          Time Selector: {alarm.time}
-        </div>
-
-        <div>
-          Repeat: {repeatString() || 'Never' }
-        </div>
-
-        <div>
-          Label: {alarm.label}
-        </div>
-
-        <div>
-          Sound: {alarm.sound || 'None'}
-        </div>
-
-        <div>
-          Snooze:
-          <Toggle toggled={alarm.snooze} onToggle={onSnooze} />
+        <div style={{textAlign: 'center'}}>
+          <TimeSelector hours={hours} minutes={minutes} ampm={ampm} onUpdate={onTimeUpdate} />
         </div>
 
         <Divider />
-        <div style={{textAlign: 'center'}} >
+
+        <List>
+          {repeatSection}
+
+          {labelSection}
+
+          <ListItem
+            primaryText='Sound'
+            secondaryText={alarm.sound || 'None'}
+            rightIcon={<ChevronRight />}
+          />
+          <ListItem
+            primaryText='Snooze'
+            rightToggle={<Toggle toggled={alarm.snooze} onToggle={onSnooze} />}
+          />
+        </List>
+
+        <Divider />
+
+        <Card style={{textAlign: 'center', marginTop: '40px'}} >
           <FlatButton
             label='Delete Alarm'
             onTouchTap={this.props.delete}
             primary
           />
-        </div>
+        </Card>
       </div>
     )
   }
@@ -103,8 +260,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       dispatch(delete_alarm(parseInt(ownProps.params.id)))
       go_to_main()
     },
-    save: () => {
-      console.log('... saving ...')
+    save: (id, alarm) => {
+      dispatch(save_alarm(alarm, id))
       go_to_main()
     }
   }

@@ -42,7 +42,7 @@ export class TimeSelector extends React.Component {
     return (
       <div >
         <SelectField
-          style={{margin: '20px'}}
+          style={{margin: '20px', width: '100px'}}
           value={this.props.hours}
           floatingLabelText='Hours'
           onChange={this.setHours}
@@ -51,7 +51,7 @@ export class TimeSelector extends React.Component {
         </SelectField>
 
         <SelectField
-          style={{margin: '20px'}}
+          style={{margin: '20px', width: '100px'}}
           value={this.props.minutes}
           floatingLabelText='Minutes'
           onChange={this.setMinutes}

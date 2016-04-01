@@ -8,12 +8,18 @@ import IconButton from 'material-ui/lib/icon-button'
 import NavigationClose from 'material-ui/lib/svg-icons/navigation/close'
 import FlatButton from 'material-ui/lib/flat-button'
 import Divider from 'material-ui/lib/divider'
-import Card from 'material-ui/lib/card/card'
 import List from 'material-ui/lib/lists/list'
 import ListItem from 'material-ui/lib/lists/list-item'
 import Toggle from 'material-ui/lib/toggle'
 import Checkbox from 'material-ui/lib/checkbox'
 import TextField from 'material-ui/lib/text-field'
+
+import Card from 'material-ui/lib/card/card'
+import CardActions from 'material-ui/lib/card/card-actions';
+import CardHeader from 'material-ui/lib/card/card-header';
+import CardText from 'material-ui/lib/card/card-text';
+
+import Dialog from 'material-ui/lib/dialog'
 
 import ChevronRight from 'material-ui/lib/svg-icons/navigation/chevron-right'
 import ArrowRight from 'material-ui/lib/svg-icons/hardware/keyboard-arrow-right'
@@ -38,7 +44,8 @@ class AlarmEdit extends React.Component {
       alarm: props.alarm,
       id: props.id,
       repeatEditOpen: false,
-      labelEditOpen: false
+      labelEditOpen: false,
+      editDialogOpen: false
     }
   }
 
@@ -160,10 +167,74 @@ class AlarmEdit extends React.Component {
       })
     }
 
+    const repeatSection2 = (
+      <Card>
+        <CardHeader
+          title='Repeat'
+          subtitle={repeatString()}
+          actAsExpander
+          showExpandableButton
+        />
+        <CardText expandable={true}>
+          <List>
+          {allWeekDays.map((day, id) => {
+            let toggleCB = () => onRepeatDayToggle(id)
+            let checked = alarm.repeat.includes(id)
+            return (
+              <ListItem
+                primaryText={`Every ${day}`}
+                key={id}
+                leftCheckbox={
+                  <Checkbox
+                    defaultChecked={checked}
+                    onCheck={toggleCB}
+                  />
+                }
+              />
+            )
+          })}
+          </List>
+
+        </CardText>
+      </Card>
+    )
+
+
     const onLabelUpdate = (e) => {
       this.setState(update(this.state, {
         alarm: {label: {$set: e.target.value}}
       }))
+    }
+
+    const editDialog = () => {
+      const handleClose = () => {
+        this.setState({labelEditOpen: false})
+      }
+
+      const actions = [
+        <FlatButton
+          label='Done'
+          primary
+          onTouchTap={handleClose}
+        />
+      ]
+
+      return (
+        <Dialog
+          title='Edit Alarm Label'
+          actions={actions}
+          modal
+          open={this.state.labelEditOpen}
+          onRequestClose={handleClose}
+        >
+          <TextField
+            defaultValue={alarm.label}
+            onChange={onLabelUpdate}
+            key='label-2'
+            fullWidth
+          />
+        </Dialog>
+      )
     }
 
     let labelSection = []
@@ -183,20 +254,40 @@ class AlarmEdit extends React.Component {
           primaryText='Label'
           secondaryText={alarm.label}
           rightIcon={<ArrowDown />}
-          onTouchTap={this.labelEditToggle}
           key='label-1'
         />
       )
 
       labelSection.push(
-        <TextField
-          defaultValue={alarm.label}
-          hintText='Alarm Label'
-          onChange={onLabelUpdate}
-          key='label-2'
-        />
+        editDialog
+        // <TextField
+        //   defaultValue={alarm.label}
+        //   hintText='Alarm Label'
+        //   onChange={onLabelUpdate}
+        //   key='label-2'
+        // />
       )
     }
+
+    const labelSection2 = (
+      <Card>
+        <CardHeader
+          title='Label'
+          subtitle={alarm.label}
+          actAsExpander
+          showExpandableButton
+        />
+        <CardText expandable={true}>
+          <TextField
+            defaultValue={alarm.label}
+            floatingLabelText='Edit Label'
+            hintText="Message you want to see when alarm rings"
+            onChange={onLabelUpdate}
+            fullWidth
+          />
+        </CardText>
+      </Card>
+    )
 
     return (
       <div style={style}>
@@ -210,8 +301,10 @@ class AlarmEdit extends React.Component {
 
         <List>
           {repeatSection}
-
           {labelSection}
+
+          {repeatSection2}
+          {labelSection2}
 
           <ListItem
             primaryText='Sound'
@@ -233,6 +326,9 @@ class AlarmEdit extends React.Component {
             primary
           />
         </Card>
+
+        {editDialog()}
+
       </div>
     )
   }

@@ -3,27 +3,27 @@ import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
 import update from 'react-addons-update'
 
-import AppBar from 'material-ui/lib/app-bar'
-import IconButton from 'material-ui/lib/icon-button'
-import NavigationClose from 'material-ui/lib/svg-icons/navigation/close'
-import FlatButton from 'material-ui/lib/flat-button'
-import Divider from 'material-ui/lib/divider'
-import List from 'material-ui/lib/lists/list'
-import ListItem from 'material-ui/lib/lists/list-item'
-import Toggle from 'material-ui/lib/toggle'
-import Checkbox from 'material-ui/lib/checkbox'
-import TextField from 'material-ui/lib/text-field'
+import AppBar from 'material-ui/AppBar'
+import IconButton from 'material-ui/IconButton'
+import NavigationClose from 'material-ui/svg-icons/navigation/close'
+import FlatButton from 'material-ui/FlatButton'
+import Divider from 'material-ui/Divider'
+import List from 'material-ui/List/List'
+import ListItem from 'material-ui/List/ListItem'
+import Toggle from 'material-ui/Toggle'
+import Checkbox from 'material-ui/Checkbox'
+import TextField from 'material-ui/TextField'
 
-import Card from 'material-ui/lib/card/card'
-import CardActions from 'material-ui/lib/card/card-actions';
-import CardHeader from 'material-ui/lib/card/card-header';
-import CardText from 'material-ui/lib/card/card-text';
+import Card from 'material-ui/Card/Card'
+// import CardActions from 'material-ui/Card/CardActions'
+import CardHeader from 'material-ui/Card/CardHeader'
+import CardText from 'material-ui/Card/CardText'
 
-import Dialog from 'material-ui/lib/dialog'
+import Dialog from 'material-ui/Dialog'
 
-import ChevronRight from 'material-ui/lib/svg-icons/navigation/chevron-right'
-import ArrowRight from 'material-ui/lib/svg-icons/hardware/keyboard-arrow-right'
-import ArrowDown from 'material-ui/lib/svg-icons/hardware/keyboard-arrow-down'
+import ChevronRight from 'material-ui/svg-icons/navigation/chevron-right'
+import ArrowRight from 'material-ui/svg-icons/hardware/keyboard-arrow-right'
+import ArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
 
 import TimeSelector from './TimeSelector'
 
@@ -175,7 +175,7 @@ class AlarmEdit extends React.Component {
           actAsExpander
           showExpandableButton
         />
-        <CardText expandable={true}>
+        <CardText expandable>
           <List>
           {allWeekDays.map((day, id) => {
             let toggleCB = () => onRepeatDayToggle(id)
@@ -198,7 +198,6 @@ class AlarmEdit extends React.Component {
         </CardText>
       </Card>
     )
-
 
     const onLabelUpdate = (e) => {
       this.setState(update(this.state, {
@@ -277,11 +276,11 @@ class AlarmEdit extends React.Component {
           actAsExpander
           showExpandableButton
         />
-        <CardText expandable={true}>
+        <CardText expandable>
           <TextField
             defaultValue={alarm.label}
             floatingLabelText='Edit Label'
-            hintText="Message you want to see when alarm rings"
+            hintText='Message you want to see when alarm rings'
             onChange={onLabelUpdate}
             fullWidth
           />

@@ -2,9 +2,9 @@ import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
 
-import FlatButton from 'material-ui/lib/flat-button'
-import Toolbar from 'material-ui/lib/toolbar/toolbar'
-import ToolbarGroup from 'material-ui/lib/toolbar/toolbar-group'
+import FlatButton from 'material-ui/FlatButton'
+import Toolbar from 'material-ui/Toolbar/Toolbar'
+import ToolbarGroup from 'material-ui/Toolbar/ToolbarGroup'
 
 import TopBar from 'components/topbar'
 import ListItem from './ListItem'

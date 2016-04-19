@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
-import RaisedButton from 'material-ui/lib/raised-button'
-import colors from 'material-ui/lib/styles/colors'
+import RaisedButton from 'material-ui/RaisedButton'
+import * as colors from 'material-ui/styles/colors'
 import { start, stop, lap, reset, updateTime } from 'redux/modules/stopwatch'
 
 import { stopwatchFormat as time_format } from 'utils/timeFormatter'

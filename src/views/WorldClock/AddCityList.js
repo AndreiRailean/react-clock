@@ -1,13 +1,13 @@
 import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
 
-import List from 'material-ui/lib/lists/list'
-import ListItem from 'material-ui/lib/lists/list-item'
-import IconButton from 'material-ui/lib/icon-button'
-import ContentAddIcon from 'material-ui/lib/svg-icons/content/add'
-import Colors from 'material-ui/lib/styles/colors'
-import AutoComplete from 'material-ui/lib/auto-complete'
-
+import List from 'material-ui/List/List'
+import ListItem from 'material-ui/List/ListItem'
+import IconButton from 'material-ui/IconButton'
+import ContentAddIcon from 'material-ui/svg-icons/content/add'
+import * as Colors from 'material-ui/styles/colors'
+import AutoComplete from 'material-ui/AutoComplete'
+import Subheader from 'material-ui/Subheader'
 import moment from 'moment-timezone'
 
 import { add_city } from 'redux/modules/worldclock'
@@ -56,7 +56,8 @@ const AddCityList = ({onAdd}) => {
   return (
     <div>
       {autocomplete}
-      <List subheader='World Cities'>
+      <List>
+        <Subheader>World Cities</Subheader>
         {cityList}
       </List>
     </div>

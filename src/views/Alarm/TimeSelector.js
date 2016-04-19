@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react'
-import SelectField from 'material-ui/lib/SelectField'
-import MenuItem from 'material-ui/lib/menus/menu-item'
+import SelectField from 'material-ui/SelectField'
+import MenuItem from 'material-ui/MenuItem'
 
 const ampm_arr = ['AM', 'PM']
 

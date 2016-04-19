@@ -2,6 +2,16 @@ import React, { PropTypes } from 'react'
 import { Provider } from 'react-redux'
 import { Router } from 'react-router'
 
+import getMuiTheme from 'material-ui/styles/getMuiTheme'
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
+import { deepOrange500 } from 'material-ui/styles/colors'
+
+const muiTheme = getMuiTheme({
+  palette: {
+    accent1Color: deepOrange500
+  }
+})
+
 import { app_background } from 'config'
 
 export default class Root extends React.Component {
@@ -9,7 +19,7 @@ export default class Root extends React.Component {
     history: PropTypes.object.isRequired,
     routes: PropTypes.element.isRequired,
     store: PropTypes.object.isRequired
-  };
+  }
 
   get content () {
     return (
@@ -36,12 +46,14 @@ export default class Root extends React.Component {
 
   render () {
     return (
-      <Provider store={this.props.store}>
-        <div style={{ height: '100%', backgroundColor: app_background }}>
-          {this.content}
-          {this.devTools}
-        </div>
-      </Provider>
+      <MuiThemeProvider muiTheme={muiTheme}>
+        <Provider store={this.props.store}>
+          <div style={{ height: '100%', backgroundColor: app_background }}>
+            {this.content}
+            {this.devTools}
+          </div>
+        </Provider>
+      </MuiThemeProvider>
     )
   }
 }

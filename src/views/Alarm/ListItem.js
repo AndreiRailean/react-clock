@@ -1,12 +1,12 @@
 import React, { PropTypes } from 'react'
 
-import Card from 'material-ui/lib/card/card'
-import CardText from 'material-ui/lib/card/card-text'
-import Colors from 'material-ui/lib/styles/colors'
-import IconButton from 'material-ui/lib/icon-button'
-import RemoveIcon from 'material-ui/lib/svg-icons/content/remove-circle'
-import ChevronRight from 'material-ui/lib/svg-icons/navigation/chevron-right'
-import Toggle from 'material-ui/lib/toggle'
+import Card from 'material-ui/Card/Card'
+import CardText from 'material-ui/Card/CardText'
+import * as Colors from 'material-ui/styles/colors'
+import IconButton from 'material-ui/IconButton'
+import RemoveIcon from 'material-ui/svg-icons/content/remove-circle'
+import ChevronRight from 'material-ui/svg-icons/navigation/chevron-right'
+import Toggle from 'material-ui/Toggle'
 
 import { app_background as default_background } from 'config'
 

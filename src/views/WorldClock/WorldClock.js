@@ -2,15 +2,15 @@ import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
 import TopBar from 'components/topbar'
 
-import Card from 'material-ui/lib/card/card'
-import CardText from 'material-ui/lib/card/card-text'
-import FlatButton from 'material-ui/lib/flat-button'
-import IconButton from 'material-ui/lib/icon-button'
-import RemoveIcon from 'material-ui/lib/svg-icons/content/remove-circle'
-import Colors from 'material-ui/lib/styles/colors'
+import Card from 'material-ui/Card/Card'
+import CardText from 'material-ui/Card/CardText'
+import FlatButton from 'material-ui/FlatButton'
+import IconButton from 'material-ui/IconButton'
+import RemoveIcon from 'material-ui/svg-icons/content/remove-circle'
+import * as Colors from 'material-ui/styles/colors'
 
-import Toolbar from 'material-ui/lib/toolbar/toolbar'
-import ToolbarGroup from 'material-ui/lib/toolbar/toolbar-group'
+import Toolbar from 'material-ui/Toolbar/Toolbar'
+import ToolbarGroup from 'material-ui/Toolbar/ToolbarGroup'
 
 // import WorldClockToolbar from './Toolbar'
 import AddCityList from './AddCityList'
@@ -133,7 +133,7 @@ class WorldClock extends React.Component {
           <CardText style={{position: 'relative'}}>
             <h2 style={{margin: '0 0 5px'}}>{name}</h2>
             <b>{day_relative}{(delta_str?',':'')}</b> {delta_str}
-            <div style={{position: 'absolute', top: '0', right: '0', padding: '5px'}}>
+            <div style={{position: 'absolute', top: '0px', right: '0px', padding: '5px'}}>
               {right_display}
             </div>
           </CardText>

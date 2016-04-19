@@ -1,11 +1,11 @@
 import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
 
-import Table from 'material-ui/lib/table/table'
-import TableRow from 'material-ui/lib/table/table-row'
-import TableRowColumn from 'material-ui/lib/table/table-row-column'
-import TableBody from 'material-ui/lib/table/table-body'
-import Colors from 'material-ui/lib/styles/colors'
+import Table from 'material-ui/Table/Table'
+import TableRow from 'material-ui/Table/TableRow'
+import TableRowColumn from 'material-ui/Table/TableRowColumn'
+import TableBody from 'material-ui/Table/TableBody'
+import * as Colors from 'material-ui/styles/colors'
 
 import { stopwatchFormat as time_format } from 'utils/timeFormatter'
 

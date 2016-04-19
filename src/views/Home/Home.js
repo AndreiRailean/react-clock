@@ -1,11 +1,11 @@
 import React from 'react'
 import { Link } from 'react-router'
 
-import Card from 'material-ui/lib/card/card'
-import CardActions from 'material-ui/lib/card/card-actions'
-import CardTitle from 'material-ui/lib/card/card-title'
-import FlatButton from 'material-ui/lib/flat-button'
-import CardText from 'material-ui/lib/card/card-text'
+import Card from 'material-ui/Card/Card'
+import CardActions from 'material-ui/Card/CardActions'
+import CardTitle from 'material-ui/Card/CardTitle'
+import FlatButton from 'material-ui/FlatButton'
+import CardText from 'material-ui/Card/CardText'
 
 import TopBar from 'components/topbar'
 

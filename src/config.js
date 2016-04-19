@@ -1,4 +1,4 @@
-import Colors from 'material-ui/lib/styles/colors'
+import {grey100, white} from 'material-ui/styles/colors'
 
-export const app_background = Colors.grey100
-export const toolbar_background = Colors.white
+export const app_background = grey100
+export const toolbar_background = white

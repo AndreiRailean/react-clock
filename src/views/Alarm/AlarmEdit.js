@@ -28,12 +28,17 @@ import ArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
 import TimeSelector from './TimeSelector'
 
 import { app_background as default_background } from 'config'
-import { delete_alarm, save_alarm } from 'redux/modules/alarm.js'
+import {
+  delete_alarm,
+  save_alarm,
+  getAlarmById,
+  getNewAlarm,
+  isNewAlarm
+} from 'redux/modules/alarm.js'
 
 const allWeekDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
 
 class AlarmEdit extends React.Component {
-
   constructor (props) {
     super(props)
     this.save = this.save.bind(this)
@@ -42,7 +47,6 @@ class AlarmEdit extends React.Component {
 
     this.state = {
       alarm: props.alarm,
-      id: props.id,
       repeatEditOpen: false,
       labelEditOpen: false,
       editDialogOpen: false
@@ -58,7 +62,7 @@ class AlarmEdit extends React.Component {
   }
 
   save () {
-    this.props.save(this.state.id, this.state.alarm)
+    this.props.save(this.state.alarm)
     // console.log(`... ${this.state.id} save ...`)
   }
 
@@ -288,6 +292,22 @@ class AlarmEdit extends React.Component {
       </Card>
     )
 
+    const deleteButton = () => {
+      if (isNewAlarm(this.props.alarm)) {
+        return null
+      } else {
+        return (
+          <Card style={{textAlign: 'center', marginTop: '40px'}} >
+            <FlatButton
+              label='Delete Alarm'
+              onTouchTap={this.props.delete}
+              primary
+            />
+          </Card>
+        )
+      }
+    }
+
     return (
       <div style={style}>
         {this.toolbar()}
@@ -317,14 +337,7 @@ class AlarmEdit extends React.Component {
         </List>
 
         <Divider />
-
-        <Card style={{textAlign: 'center', marginTop: '40px'}} >
-          <FlatButton
-            label='Delete Alarm'
-            onTouchTap={this.props.delete}
-            primary
-          />
-        </Card>
+        {deleteButton()}
 
         {editDialog()}
 
@@ -335,28 +348,33 @@ class AlarmEdit extends React.Component {
 
 AlarmEdit.propTypes = {
   alarm: PropTypes.object.isRequired,
-  id: PropTypes.number.isRequired,
   cancel: PropTypes.func.isRequired,
   save: PropTypes.func.isRequired,
   delete: PropTypes.func.isRequired
 }
 
-const mapStateToProps = (state, ownProps) => ({
-  alarm: state.alarm.list[parseInt(ownProps.params.id)],
-  id: parseInt(ownProps.params.id)
-})
+const mapStateToProps = (state, ownProps) => {
+  let id = ownProps.params.id
+  let alarm = getAlarmById(state.alarm, id)
+  if (!alarm) {
+    alarm = getNewAlarm()
+  }
+  return ({
+    alarm: alarm
+  })
+}
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   const go_to_main = () => dispatch(push('/alarm'))
 
   return {
     cancel: () => go_to_main(),
-    delete: () => {
-      dispatch(delete_alarm(parseInt(ownProps.params.id)))
+    delete: (alarm) => {
+      dispatch(delete_alarm(alarm))
       go_to_main()
     },
-    save: (id, alarm) => {
-      dispatch(save_alarm(alarm, id))
+    save: (alarm) => {
+      dispatch(save_alarm(alarm))
       go_to_main()
     }
   }

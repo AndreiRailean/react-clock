@@ -1,38 +1,38 @@
 import update from 'react-addons-update'
+import uuid from 'uuid'
 
 // ------------------------------------
 // Constants
 // ------------------------------------
-export const ALARM_ADD = 'ALARM_ADD'
 export const ALARM_DELETE = 'ALARM_DELETE'
-export const ALARM_SAVE = 'ALARM_EDIT'
+export const ALARM_SAVE = 'ALARM_SAVE'
 export const ALARM_TOGGLE = 'ALARM_TOGGLE'
 
 // ------------------------------------
 // Actions
 // ------------------------------------
-export const add_alarm = () => ({
-  type: ALARM_ADD
-})
-
-export const delete_alarm = (index) => ({
+export const delete_alarm = (id) => ({
   type: ALARM_DELETE,
-  index
+  payload: {
+    id
+  }
 })
 
-export const save_alarm = (data, index) => ({
+export const save_alarm = (alarm) => ({
   type: ALARM_SAVE,
-  index,
-  data
+  payload: {
+    alarm
+  }
 })
 
-export const toggle_alarm = (index) => ({
+export const toggle_alarm = (id) => ({
   type: ALARM_TOGGLE,
-  index
+  payload: {
+    id
+  }
 })
 
 export const actions = {
-  add_alarm,
   delete_alarm,
   save_alarm,
   toggle_alarm
@@ -42,67 +42,92 @@ export const actions = {
 // Action Handlers
 // ------------------------------------
 const ACTION_HANDLERS = {
-  [ALARM_ADD]: (state, action) => {
-    return state
-  },
-
   [ALARM_DELETE]: (state, action) => {
+    let { id } = action.payload
+    const index = findAlarmIndex(state, {id})
     return update(state, {
-      list: {$splice: [[action.index, 1]]}
+      $splice: [[index, 1]]
     })
   },
 
   [ALARM_SAVE]: (state, action) => {
-    const { index, data } = action
-
+    const { alarm } = action.payload
     let $update = {}
-
-    if (index !== null) {
-      $update = {$splice: [[index, 1, data]]}
+    let index = findAlarmIndex(state, alarm)
+    if (index < 0) {
+      alarm.id = uuid.v4()
+      $update = {$push: [alarm]}
     } else {
-      $update = {$push: [data]}
+      $update = {$splice: [[index, 1, alarm]]}
     }
 
-    return update(state, { list: $update })
+    return update(state, $update)
   },
 
   [ALARM_TOGGLE]: (state, action) => {
-    const alarm = state.list[action.index]
+    const {id} = action.payload
+    const index = findAlarmIndex(state, {id})
+    const alarm = state[index]
     alarm.enabled = !alarm.enabled
 
     return update(state, {
-      list: {$splice: [[action.index, 1, alarm]]}
+      $splice: [[index, 1, alarm]]
     })
   }
 }
 
+export const emptyAlarm = {
+  time: '7:42 AM',
+  label: 'Alarm',
+  repeat: [],
+  snooze: true,
+  sound: null,
+  enabled: true
+}
+
+export const findAlarmIndex = (state, alarm) => {
+  return state.findIndex((a) => (a.id === alarm.id))
+}
+
+export const getAlarmById = (state, id) => {
+  return state.find((a) => (a.id === id))
+}
+
+export const getNewAlarm = () => (emptyAlarm)
+export const isNewAlarm = (alarm) => isNaN(alarm.id)
+
 // ------------------------------------
 // Reducer
 // ------------------------------------
-const initialState = {
-  list: [{
+const initialState = [
+  {
+    id: 0,
     time: '7:42 AM',
     label: 'Alarm',
     repeat: [],
     snooze: true,
     sound: null,
     enabled: true
-  }, {
+  },
+  {
+    id: 1,
     time: '10:20 AM',
     label: 'Waky-Waky',
     repeat: [0, 2, 6],
     snooze: false,
     sound: null,
     enabled: false
-  }, {
+  },
+  {
+    id: 2,
     time: '1:37 PM',
     label: 'Vacuum Now',
     repeat: [],
     snooze: true,
     sound: null,
     enabled: true
-  }]
-}
+  }
+]
 
 export default function alarmReducer (state=initialState, action) {
   const handler = ACTION_HANDLERS[action.type]

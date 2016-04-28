@@ -22,6 +22,7 @@ export default (store) => (
     <Route path='worldclock' component={WorldClock} />
     <Route path='alarm' component={AlarmApp} />
     <Route path='alarms/:id/edit' component={AlarmEdit} />
+    <Route path='alarms/add' component={AlarmEdit} />
     <Route path='stopwatch' component={Stopwatch} />
     <Route path='timer' component={Timer} />
     <Route path='info' component={Info} />

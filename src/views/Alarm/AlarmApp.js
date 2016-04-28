@@ -9,15 +9,18 @@ import ToolbarGroup from 'material-ui/Toolbar/ToolbarGroup'
 import TopBar from 'components/topbar'
 import ListItem from './ListItem'
 
-import { toggle_alarm, delete_alarm } from 'redux/modules/alarm.js'
 import { app_background as default_background, toolbar_background } from 'config'
+
+import {
+  toggle_alarm,
+  delete_alarm
+} from 'redux/modules/alarm.js'
 
 class AlarmApp extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      editing: false,
-      adding: false
+      editing: false
     }
   }
 
@@ -26,9 +29,9 @@ class AlarmApp extends React.Component {
       <ListItem
         key={i}
         editing={this.state.editing}
-        onToggle={this.props.onToggleAlarm(i)}
-        onDelete={this.props.onDeleteAlarm(i)}
-        onEdit={this.props.onEditAlarm(i)}
+        onToggle={this.props.onToggleAlarm(alarm.id)}
+        onDelete={this.props.onDeleteAlarm(alarm.id)}
+        onEdit={this.props.onEditAlarm(alarm.id)}
         {...alarm}
       />
     ))
@@ -39,32 +42,18 @@ class AlarmApp extends React.Component {
       this.setState({editing: !this.state.editing})
     }
 
-    const onAddToggle = () => {
-      onCancel()
-      this.setState({adding: !this.state.adding})
-    }
-
     const onCancel = () => {
       this.setState({adding: false, editing: false})
     }
 
-    const onSaveAlarm = () => {
-
-    }
-
-    let right_button = ''
-    if (this.state.editing && this.props.alarms.length) {
-      right_button = <FlatButton label='Done' primary onTouchTap={onCancel} />
-    } else if (this.state.adding && this.props.alarms.length) {
-      right_button = <FlatButton label='Cancel' primary onTouchTap={onCancel} />
+    let left_button = ''
+    if (this.state.editing) {
+      left_button = <FlatButton label='Done' primary onTouchTap={onCancel} />
     } else if (this.props.alarms && this.props.alarms.length) {
-      right_button = <FlatButton label='Edit' primary onTouchTap={onEditToggle} />
+      left_button = <FlatButton label='Edit' primary onTouchTap={onEditToggle} />
     }
 
-    let left_button = <FlatButton label='+' primary onTouchTap={onAddToggle} />
-    if (this.state.adding) {
-      left_button = <FlatButton label='Save' primary onTouchTap={onSaveAlarm} />
-    }
+    let right_button = <FlatButton label='+' primary onTouchTap={this.props.onAddAlarm()} />
 
     let style = {
       background: toolbar_background
@@ -73,10 +62,10 @@ class AlarmApp extends React.Component {
     return (
       <Toolbar style={style}>
         <ToolbarGroup firstChild float='left'>
-          {right_button}
+          {left_button}
         </ToolbarGroup>
         <ToolbarGroup lastChild float='right'>
-          {left_button}
+          {right_button}
         </ToolbarGroup>
       </Toolbar>
     )
@@ -112,17 +101,19 @@ AlarmApp.propTypes = {
   alarms: PropTypes.array.isRequired,
   onToggleAlarm: PropTypes.func.isRequired,
   onDeleteAlarm: PropTypes.func.isRequired,
+  onAddAlarm: PropTypes.func.isRequired,
   onEditAlarm: PropTypes.func.isRequired
 }
 
 const mapStateToProps = (state) => ({
-  alarms: state.alarm.list
+  alarms: state.alarm
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  onToggleAlarm: (index) => () => dispatch(toggle_alarm(index)),
-  onDeleteAlarm: (index) => () => dispatch(delete_alarm(index)),
-  onEditAlarm: (index) => () => dispatch(push(`/alarms/${index}/edit`))
+  onToggleAlarm: (id) => () => dispatch(toggle_alarm(id)),
+  onDeleteAlarm: (id) => () => dispatch(delete_alarm(id)),
+  onEditAlarm: (id) => () => dispatch(push(`/alarms/${id}/edit`)),
+  onAddAlarm: () => () => dispatch(push('/alarms/add'))
 })
 
 export default connect(

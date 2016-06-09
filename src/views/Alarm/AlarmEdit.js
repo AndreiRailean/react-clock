@@ -48,8 +48,7 @@ class AlarmEdit extends React.Component {
     this.state = {
       alarm: props.alarm,
       repeatEditOpen: false,
-      labelEditOpen: false,
-      editDialogOpen: false
+      labelEditOpen: false
     }
   }
 
@@ -131,47 +130,7 @@ class AlarmEdit extends React.Component {
       }))
     }
 
-    let repeatSection = []
-    if (!this.state.repeatEditOpen) {
-      repeatSection.push(
-        <ListItem
-          primaryText='Repeat'
-          secondaryText={repeatString()}
-          rightIcon={<ArrowRight />}
-          onTouchTap={this.repeatEditToggle}
-          key='repeat-1'
-        />
-      )
-    } else {
-      repeatSection.push(
-        <ListItem
-          primaryText='Repeat'
-          secondaryText={repeatString()}
-          rightIcon={<ArrowDown />}
-          onTouchTap={this.repeatEditToggle}
-          key='repeat-1'
-        />
-      )
-
-      allWeekDays.forEach((day, id) => {
-        let toggleCB = () => onRepeatDayToggle(id)
-        let checked = alarm.repeat.includes(id)
-        repeatSection.push(
-          <ListItem
-            primaryText={`Every ${day}`}
-            key={id}
-            leftCheckbox={
-              <Checkbox
-                defaultChecked={checked}
-                onCheck={toggleCB}
-              />
-            }
-          />
-        )
-      })
-    }
-
-    const repeatSection2 = (
+    const repeatSection = (
       <Card>
         <CardHeader
           title='Repeat'
@@ -198,7 +157,6 @@ class AlarmEdit extends React.Component {
             )
           })}
           </List>
-
         </CardText>
       </Card>
     )
@@ -263,12 +221,6 @@ class AlarmEdit extends React.Component {
 
       labelSection.push(
         editDialog
-        // <TextField
-        //   defaultValue={alarm.label}
-        //   hintText='Alarm Label'
-        //   onChange={onLabelUpdate}
-        //   key='label-2'
-        // />
       )
     }
 
@@ -322,7 +274,6 @@ class AlarmEdit extends React.Component {
           {repeatSection}
           {labelSection}
 
-          {repeatSection2}
           {labelSection2}
 
           <ListItem

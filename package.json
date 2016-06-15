@@ -59,9 +59,9 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/davezuko/react-redux-starter-kit.git"
+    "url": "git+https://github.com/AndreiRailean/react-clock"
   },
-  "author": "David Zukowski <david@zuko.me> (http://zuko.me)",
+  "author": "Andrei Railean <andrei@andrei.md> (http://andrei.md)",
   "license": "MIT",
   "dependencies": {
     "babel-core": "6.7.6",

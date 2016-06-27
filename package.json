@@ -19,6 +19,7 @@
     "test": "better-npm-run test",
     "test:dev": "npm run test -- --watch",
     "deploy": "better-npm-run deploy",
+    "release-gh": "better-npm-run deploy:gh-pages",
     "flow:check": "babel-node bin/flow-check",
     "codecov": "cat coverage/*/lcov.info | codecov"
   },
@@ -39,6 +40,14 @@
     "deploy": {
       "command": "npm run clean && npm run compile",
       "env": {
+        "NODE_ENV": "production",
+        "DEBUG": "app:*"
+      }
+    },
+    "deploy:gh-pages": {
+      "command": "npm run clean && npm run compile",
+      "env": {
+        "BASENAME": "/react-clock",
         "NODE_ENV": "production",
         "DEBUG": "app:*"
       }
